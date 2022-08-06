@@ -1,0 +1,62 @@
+[
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "C:\\Users\\LiuZS\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.4\\cores\\esp32"
+  },
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "C:\\Users\\LiuZS\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.4\\variants\\esp32"
+  },
+  {
+    "Sourcefile": "g:\\Data\\开发\\DashBoard\\CODE\\Board\\bulid\\sketch\\DashBoard.ino.cpp",
+    "Include": "Wire.h",
+    "Includepath": "C:\\Users\\LiuZS\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.4\\libraries\\Wire\\src"
+  },
+  {
+    "Sourcefile": "g:\\Data\\开发\\DashBoard\\CODE\\Board\\bulid\\sketch\\DashBoard.ino.cpp",
+    "Include": "SSD1306Wire.h",
+    "Includepath": "C:\\Users\\LiuZS\\Documents\\Arduino\\libraries\\ESP8266_and_ESP32_OLED_driver_for_SSD1306_displays\\src"
+  },
+  {
+    "Sourcefile": "g:\\Data\\开发\\DashBoard\\CODE\\Board\\bulid\\sketch\\DashBoard.ino.cpp",
+    "Include": "TM1637.h",
+    "Includepath": "C:\\Users\\LiuZS\\Documents\\Arduino\\libraries\\Grove_4-Digit_Display"
+  },
+  {
+    "Sourcefile": "g:\\Data\\开发\\DashBoard\\CODE\\Board\\bulid\\sketch\\DashBoard.ino.cpp",
+    "Include": "Freenove_WS2812_Lib_for_ESP32.h",
+    "Includepath": "C:\\Users\\LiuZS\\Documents\\Arduino\\libraries\\Freenove_WS2812_Lib_for_ESP32\\src"
+  },
+  {
+    "Sourcefile": "g:\\Data\\开发\\DashBoard\\CODE\\Board\\bulid\\sketch\\DashBoard.ino.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\LiuZS\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.4\\libraries\\Wire\\src\\Wire.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\LiuZS\\Documents\\Arduino\\libraries\\ESP8266_and_ESP32_OLED_driver_for_SSD1306_displays\\src\\OLEDDisplay.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\LiuZS\\Documents\\Arduino\\libraries\\ESP8266_and_ESP32_OLED_driver_for_SSD1306_displays\\src\\OLEDDisplayUi.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\LiuZS\\Documents\\Arduino\\libraries\\Grove_4-Digit_Display\\TM1637.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\LiuZS\\Documents\\Arduino\\libraries\\Freenove_WS2812_Lib_for_ESP32\\src\\Freenove_WS2812_Lib_for_ESP32.cpp",
+    "Include": "",
+    "Includepath": null
+  }
+]
