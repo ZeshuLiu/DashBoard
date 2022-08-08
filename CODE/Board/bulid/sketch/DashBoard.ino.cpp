@@ -38,7 +38,7 @@ void setup(){
 void loop(){
     get_serial_data();
     
-    delay(1000);
+    delay(100);
 }
 #line 1 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\Dash_USB_serial.ino"
 #include "Dash_USB_serial.h"
@@ -160,18 +160,19 @@ void Serial_Disp(String P_Data){
             for (int i = 0; i < 24; i++){
                 for (int j = 0; j < 3; j++){
                     //high
-                    if(Serial_Data[i*6+3+j]-'0'<=9){
-                        colo = (Serial_Data[i*6+3+j]-'0')*16;
+                    if(Serial_Data[i*6+3+j*2]-'0'<=9){
+                        colo = (Serial_Data[i*6+3+j*2]-'0')*16;
                     }
                     else{
-                        colo = (Serial_Data[i*6+3+j]-'a'+10)*16;
+                        colo = (Serial_Data[i*6+3+j*2]-'a'+10)*16;
                     }
+
                     //low
-                    if(Serial_Data[i*6+4+j]-'0'<=9){
-                        colo += (Serial_Data[i*6+4+j]-'0');
+                    if(Serial_Data[i*6+4+j*2]-'0'<=9){
+                        colo += (Serial_Data[i*6+4+j*2]-'0');
                     }
                     else{
-                        colo += (Serial_Data[i*6+4+j]-'a'+10);
+                        colo += (Serial_Data[i*6+4+j*2]-'a'+10);
                     }
                     color_buff[i][j] = colo;
                     colo = 0;

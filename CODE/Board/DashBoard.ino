@@ -11,5 +11,5 @@ void setup(){
 void loop(){
     get_serial_data();
     
-    delay(1000);
+    delay(100);
 }

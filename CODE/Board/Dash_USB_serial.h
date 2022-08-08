@@ -4,7 +4,7 @@
 #include "db_disp.h"
 
 #define MAX_DATA_LEN 285
-#define wait_time 2000
+#define wait_time 50
 // char Serial_Data[MAX_DATA_LEN]; 
 String Serial_Data = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
