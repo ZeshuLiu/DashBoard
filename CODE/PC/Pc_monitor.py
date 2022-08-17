@@ -32,6 +32,7 @@ class PC_SERIAL_MONITOR():
         self.ser = serial.Serial(self.portx, 115200)
         self.pc = PC_STAT()
         self.led_buf = [[0,0,0]]*24
+        self.led_bright = 20
         #print(self.led_buf)
 
     def test_monitor(self):
@@ -51,11 +52,10 @@ class PC_SERIAL_MONITOR():
         self.ser.write(self.mem_word.encode("ascii"))
 
     def cpu_on_led(self,cpu_all,cpu_percore):# 2-12(true :1-11) for cpu monitor
-        self.bright = 20
         #self.change_led(1,[0,self.bright//2,self.bright//2])
         if cpu_all == 100:
             for i in range(1,12):
-                self.change_led(i,[self.bright,0,0])
+                self.change_led(i,[self.led_bright,0,0])
             self.send_led_mode0()
             return
         
@@ -63,14 +63,44 @@ class PC_SERIAL_MONITOR():
         self.last_bright = cpu_all%10
         # clear MAX
         for i in range(1,12):
-            self.change_led(i,[0,self.bright,1])
+            self.change_led(i,[0,self.led_bright,1])
         
         for i in range(self.num_light-1):
-            self.change_led(1+i,[self.bright,0,0])
+            self.change_led(1+i,[self.led_bright,0,0])
         
-        self.change_led(self.num_light,[int(0.3*self.bright*self.last_bright),int(0.2*self.bright*(10-self.last_bright)),0])
+        self.change_led(self.num_light,[int(0.3*self.led_bright*self.last_bright),int(0.2*self.led_bright*(10-self.last_bright)),0])
         self.send_led_mode0()
         print(self.num_light)
+
+    def gpu_on_led(self,gpu_util,gpu_mem):# 24-20(true :23-19) for gpu_util || 18-14(true :17-13) for gpu_mem
+        if gpu_util == 100:
+            for i in range(23,18,-1):
+                self.change_led(i,[self.led_bright,0,0])
+            self.send_led_mode0()
+        elif gpu_util != 100:
+            for i in range(23,18,-1):
+                self.change_led(i,[0,0,self.led_bright])
+            self.send_led_mode0()
+
+
+        if gpu_mem == 100:
+            for i in range(17,12,-1):
+                self.change_led(i,[self.led_bright,0,0])
+            self.send_led_mode0()
+            return
+        
+        self.num_light_mem = int(gpu_mem*5//100+1)
+        self.last_bright_mem = gpu_mem%10
+        # clear MAX
+        for i in range(17,12,-1):
+            self.change_led(i,[0,1,self.led_bright])
+        
+        for i in range(17,17-self.num_light_mem+1,-1):
+            self.change_led(i,[self.led_bright,0,0])
+        
+        self.change_led(17-self.num_light_mem+1,[int(0.3*self.led_bright*self.last_bright_mem),0,int(0.2*self.led_bright*(10-self.last_bright_mem))])
+        self.send_led_mode0()
+        print('mem %d' %self.num_light_mem)
 
     def change_led(self,place,rgb_valu:list[3]):
         if place>=24:
@@ -107,11 +137,14 @@ if __name__ == "__main__":
     time.sleep(0.3)
     while True:
         x,_ = a.get_cpu()
+        y = a.get_gpu()
         print(x)
         b.cpu_on_led(x,[0]*12)
         time.sleep(0.25)
         b.mem_on_seg()
         time.sleep(0.25)
+        b.gpu_on_led(10,y['mem'])
+        time.sleep(0.5)
     """while True:
         b.test_monitor()
         time.sleep(0.5)"""

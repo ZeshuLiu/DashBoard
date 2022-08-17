@@ -59,7 +59,9 @@ void Serial_Disp(String P_Data){
     int colo;
     switch (P_Data[0]- '0'){
     case 0://测试使用
-        disp_test_all();
+        if(P_Data[1]=='0'&&P_Data[2]=='7'){
+            disp_test_all();
+        }
         break;
 
     case 1://Oled
