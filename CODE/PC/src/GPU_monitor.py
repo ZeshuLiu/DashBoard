@@ -19,3 +19,5 @@ for i in range(deviceCount):
     print("Temperature is %d C"%nvmlDeviceGetTemperature(handle,0))
     print("Fan speed is ",nvmlDeviceGetFanSpeed(handle))
     print("Power usage %.2f W" %(nvmlDeviceGetPowerUsage(handle)/1000.0))
+    print("Power max %.2f W" %(nvmlDeviceGetPowerManagementLimit(handle)/1000))
+    print(nvmlDeviceGetPerformanceState(handle))
