@@ -110,7 +110,7 @@ class PC_SERIAL_MONITOR():
         #print('mem %d' %self.num_light_mem)
     
     def temp_on_screen(self,cpu_tmp,gpu_tmp):
-        self.dash.change_oled(3,"CPU:"+" "*(4-len(str(cpu_tmp)[0:2]))+str(cpu_tmp)[0:2]+" C",iflcear=True)
+        #self.dash.change_oled(3,"CPU:"+" "*(4-len(str(cpu_tmp)[0:2]))+str(cpu_tmp)[0:2]+" C",iflcear=True)
         #now_time = datetime.datetime.now()
         self.dash.change_oled(5,"Time:" + time.strftime("%H", time.localtime()) + ":" + time.strftime("%M", time.localtime()))
         self.dash.change_oled(4,"GPU:"+" "*(4-len(str(gpu_tmp)))+str(gpu_tmp)+" C",ifsend=True)
