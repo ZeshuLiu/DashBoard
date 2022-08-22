@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "db_interface.h"
-void interface_work(void *para){
+
+void interface_init(){
     pinMode(CTRL_PIN, INPUT_PULLUP);
     CTRL_STAT = !digitalRead(CTRL_PIN); // high if release!
 
@@ -17,10 +18,16 @@ void interface_work(void *para){
     R_ENC_A_STAT = digitalRead(R_ENC_A);
     R_ENC_B_STAT = digitalRead(R_ENC_B);
 
-    while (1){
+}
+
+void interface_work(void *para){
+    bool mid;
+    bool mid2;
+    for(;;){
 
         // ctrl pin changed
-        if( CTRL_STAT == digitalRead(CTRL_PIN)){
+        mid = digitalRead(CTRL_PIN);
+        if( CTRL_STAT == mid){
             CTRL_STAT = !CTRL_STAT;
 
             // ctrl released--Pressed
@@ -33,8 +40,115 @@ void interface_work(void *para){
             }
         }
         // ctrl end
+        // boot 
+        mid = digitalRead(BOOT_PIN);
+        if( BOOT_STAT == mid){
+            BOOT_STAT = !BOOT_STAT;
+
+            // BOOT released--Pressed
+            if (!BOOT_STAT){
+                BOOT_STAT = 0;
+                BOOT_PRESS = 0;
+            }
+            else{
+                BOOT_PRESS = 1;
+            }
+        }
+        // boot end
+
+        //L enc
+        mid = digitalRead(L_ENC_A);
+        mid2 = digitalRead(L_ENC_B);
+        if( L_ENC_A_STAT != mid ){ // 转动
+            L_ENC_A_STAT = !L_ENC_A_STAT;
+            if( L_ENC_A_STAT == mid2){
+                L_ENC_RUN += 1;
+            }
+            else{
+                L_ENC_RUN -= 1;
+            }
+        }
+        // l enc end
+        //R enc
+        mid = digitalRead(R_ENC_A);
+        mid2 = digitalRead(R_ENC_B);
+        if( R_ENC_A_STAT != mid ){ // 转动
+            R_ENC_A_STAT = !R_ENC_A_STAT;
+            if( R_ENC_A_STAT == mid2){
+                R_ENC_RUN += 1;
+            }
+            else{
+                R_ENC_RUN -= 1;
+            }
+        }
+        //R enc end
+        vTaskDelay(5);
+        if(DBG_interface){
+            Serial.println("Go");
+            Serial.printf("ctrl:%s;boot:%s;LENC:%s;RENC:%s" ,String(CTRL_PRESS),String(BOOT_PRESS),String(L_ENC_RUN),String(R_ENC_RUN));
+        }
+
+        // mode change
+        if((old_ctrl != CTRL_STAT) && CTRL_STAT == 1){
+            vTaskDelay(10);
+            if (CTRL_STAT = digitalRead(CTRL_PIN)){
+                mode = (mode+1)%max_mode ;
+                mode_change = 1;
+            }
+        }
+        old_ctrl == CTRL_STAT;
+    }// 循环
+}
+
+void interface_start(){
+    Serial.println("Interface start!");
+    xTaskCreatePinnedToCore(
+                    interface_work,          /* 任务函数 */
+                    "INTERFACE",         /* 任务名 */
+                    Inter_task_stack,            /* 任务栈大小，根据需要自行设置*/
+                    NULL,              /* 参数，入参为空 */
+                    Inter_Task_Prior,                 /* 优先级 */
+                    &Inter_TASK_Handle,  /* 任务句柄 */
+                    Inter_Task_Core);
+}
 
 
-    }
+void mode_ctrl_work(void *para){
+
+    while (1){
+        if  (mode_change){
+            mode_change = 0 ;
+            seg_disp_normal(mode,0);
+            vTaskDelay(1000);
+        }
+        Serial.println(String(mode));
+        // mode work
+        if (mode == 0){
+            test_clk();
+            vTaskDelay(100);
+        }
+        else if(mode == 1){
+            get_serial_data();
+            vTaskDelay(100);
+        }
+        else if (mode == 2){
+            Serial.println("MODE 2");
+            vTaskDelay(100);
+        }
+        
+        vTaskDelay(10);
+    }//死循环
     
+}
+
+void mode_ctrl_start(){
+    Serial.println("mode_ctrl start!");
+    xTaskCreatePinnedToCore(
+                    mode_ctrl_work,          /* 任务函数 */
+                    "INTERFACE",         /* 任务名 */
+                    Mode_task_stack,            /* 任务栈大小，根据需要自行设置*/
+                    NULL,              /* 参数，入参为空 */
+                    Mode_Task_Prior,                 /* 优先级 */
+                    &Mode_TASK_Handle,  /* 任务句柄 */
+                    Mode_Task_Core);
 }

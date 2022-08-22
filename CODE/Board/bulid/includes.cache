@@ -31,6 +31,11 @@
   },
   {
     "Sourcefile": "g:\\Data\\开发\\DashBoard\\CODE\\Board\\bulid\\sketch\\DashBoard.ino.cpp",
+    "Include": "ThreeWire.h",
+    "Includepath": "C:\\Users\\LiuZS\\Documents\\Arduino\\libraries\\Rtc_by_Makuna\\src"
+  },
+  {
+    "Sourcefile": "g:\\Data\\开发\\DashBoard\\CODE\\Board\\bulid\\sketch\\DashBoard.ino.cpp",
     "Include": "",
     "Includepath": null
   },
@@ -56,6 +61,16 @@
   },
   {
     "Sourcefile": "C:\\Users\\LiuZS\\Documents\\Arduino\\libraries\\Freenove_WS2812_Lib_for_ESP32\\src\\Freenove_WS2812_Lib_for_ESP32.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\LiuZS\\Documents\\Arduino\\libraries\\Rtc_by_Makuna\\src\\RtcDateTime.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\LiuZS\\Documents\\Arduino\\libraries\\Rtc_by_Makuna\\src\\RtcUtility.cpp",
     "Include": "",
     "Includepath": null
   }

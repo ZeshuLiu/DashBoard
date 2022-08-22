@@ -1,12 +1,13 @@
 #include <Arduino.h>
 #line 1 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\DashBoard.ino"
 #include "db_disp.h"      // legacy: #include "SSD1306.h"
-//#include "db_interface.h"
+#include "time_1302.h"
+#include "db_interface.h"
 #include "Dash_USB_serial.h"
 
-#line 5 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\DashBoard.ino"
+#line 6 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\DashBoard.ino"
 void setup();
-#line 11 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\DashBoard.ino"
+#line 20 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\DashBoard.ino"
 void loop();
 #line 5 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\Dash_USB_serial.ino"
 void get_serial_data();
@@ -26,19 +27,44 @@ void oled_disp(int mode, bool ifclear);
 void seg_disp_normal(int number,int comma);
 #line 150 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_disp.ino"
 void stp_disp_round(int color[24][3]);
-#line 3 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
+#line 4 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
+void interface_init();
+#line 23 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
 void interface_work(void *para);
-#line 5 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\DashBoard.ino"
+#line 103 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
+void interface_start();
+#line 116 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
+void mode_ctrl_work(void *para);
+#line 144 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
+void mode_ctrl_start();
+#line 5 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.ino"
+void start_RTC();
+#line 46 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.ino"
+void printDateTime_Serial(const RtcDateTime& dt);
+#line 62 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.ino"
+void printDateTime_Seg();
+#line 71 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.ino"
+void test_clk();
+#line 6 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\DashBoard.ino"
 void setup(){
     Serial.begin(115200);
     Serial.println("Board Starting");
     Serial.println("Init");
+    seg_start();
+    oled_start();
+    led_start();
+    start_RTC();
+    interface_init();
+    delay(100);
+    interface_start();
+    mode_ctrl_start();
 }
 
 void loop(){
-    get_serial_data();
-    
-    delay(100);
+    //get_serial_data();
+    //test_clk();
+    //interface_start();
+    delay(1000);
 }
 #line 1 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\Dash_USB_serial.ino"
 #include "Dash_USB_serial.h"
@@ -349,7 +375,8 @@ void stp_disp_round(int color[24][3]){
 #line 1 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
 #include <Arduino.h>
 #include "db_interface.h"
-void interface_work(void *para){
+
+void interface_init(){
     pinMode(CTRL_PIN, INPUT_PULLUP);
     CTRL_STAT = !digitalRead(CTRL_PIN); // high if release!
 
@@ -366,10 +393,16 @@ void interface_work(void *para){
     R_ENC_A_STAT = digitalRead(R_ENC_A);
     R_ENC_B_STAT = digitalRead(R_ENC_B);
 
-    while (1){
+}
+
+void interface_work(void *para){
+    bool mid;
+    bool mid2;
+    for(;;){
 
         // ctrl pin changed
-        if( CTRL_STAT == digitalRead(CTRL_PIN)){
+        mid = digitalRead(CTRL_PIN);
+        if( CTRL_STAT == mid){
             CTRL_STAT = !CTRL_STAT;
 
             // ctrl released--Pressed
@@ -382,8 +415,201 @@ void interface_work(void *para){
             }
         }
         // ctrl end
+        // boot 
+        mid = digitalRead(BOOT_PIN);
+        if( BOOT_STAT == mid){
+            BOOT_STAT = !BOOT_STAT;
+
+            // BOOT released--Pressed
+            if (!BOOT_STAT){
+                BOOT_STAT = 0;
+                BOOT_PRESS = 0;
+            }
+            else{
+                BOOT_PRESS = 1;
+            }
+        }
+        // boot end
+
+        //L enc
+        mid = digitalRead(L_ENC_A);
+        mid2 = digitalRead(L_ENC_B);
+        if( L_ENC_A_STAT != mid ){ // 转动
+            L_ENC_A_STAT = !L_ENC_A_STAT;
+            if( L_ENC_A_STAT == mid2){
+                L_ENC_RUN += 1;
+            }
+            else{
+                L_ENC_RUN -= 1;
+            }
+        }
+        // l enc end
+        //R enc
+        mid = digitalRead(R_ENC_A);
+        mid2 = digitalRead(R_ENC_B);
+        if( R_ENC_A_STAT != mid ){ // 转动
+            R_ENC_A_STAT = !R_ENC_A_STAT;
+            if( R_ENC_A_STAT == mid2){
+                R_ENC_RUN += 1;
+            }
+            else{
+                R_ENC_RUN -= 1;
+            }
+        }
+        //R enc end
+        vTaskDelay(5);
+        if(DBG_interface){
+            Serial.println("Go");
+            Serial.printf("ctrl:%s;boot:%s;LENC:%s;RENC:%s" ,String(CTRL_PRESS),String(BOOT_PRESS),String(L_ENC_RUN),String(R_ENC_RUN));
+        }
+
+        // mode change
+        if((old_ctrl != CTRL_STAT) && CTRL_STAT == 1){
+            vTaskDelay(10);
+            if (CTRL_STAT = digitalRead(CTRL_PIN)){
+                mode = (mode+1)%max_mode ;
+                mode_change = 1;
+            }
+        }
+        old_ctrl == CTRL_STAT;
+    }// 循环
+}
+
+void interface_start(){
+    Serial.println("Interface start!");
+    xTaskCreatePinnedToCore(
+                    interface_work,          /* 任务函数 */
+                    "INTERFACE",         /* 任务名 */
+                    Inter_task_stack,            /* 任务栈大小，根据需要自行设置*/
+                    NULL,              /* 参数，入参为空 */
+                    Inter_Task_Prior,                 /* 优先级 */
+                    &Inter_TASK_Handle,  /* 任务句柄 */
+                    Inter_Task_Core);
+}
 
 
-    }
+void mode_ctrl_work(void *para){
+
+    while (1){
+        if  (mode_change){
+            mode_change = 0 ;
+            seg_disp_normal(mode,0);
+            vTaskDelay(1000);
+        }
+        Serial.println(String(mode));
+        // mode work
+        if (mode == 0){
+            test_clk();
+            vTaskDelay(100);
+        }
+        else if(mode == 1){
+            get_serial_data();
+            vTaskDelay(100);
+        }
+        else if (mode == 2){
+            Serial.println("MODE 2");
+            vTaskDelay(100);
+        }
+        
+        vTaskDelay(10);
+    }//死循环
     
+}
+
+void mode_ctrl_start(){
+    Serial.println("mode_ctrl start!");
+    xTaskCreatePinnedToCore(
+                    mode_ctrl_work,          /* 任务函数 */
+                    "INTERFACE",         /* 任务名 */
+                    Mode_task_stack,            /* 任务栈大小，根据需要自行设置*/
+                    NULL,              /* 参数，入参为空 */
+                    Mode_Task_Prior,                 /* 优先级 */
+                    &Mode_TASK_Handle,  /* 任务句柄 */
+                    Mode_Task_Core);
+}
+#line 1 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.ino"
+#include "time_1302.h"
+
+#define countof(a) (sizeof(a) / sizeof(a[0]))
+
+void start_RTC(){
+    Rtc.Begin();
+
+    RtcDateTime compiled = RtcDateTime(__DATE__, __TIME__);
+    //RtcDateTime compiled = RtcDateTime("Dec 06 2009", "12:34:56");// sample input: date = "Dec 06 2009", time = "12:34:56"
+    if (!Rtc.IsDateTimeValid()) {
+        // Common Causes:
+        //    1) first time you ran and the device wasn't running yet
+        //    2) the battery on the device is low or even missing
+
+        Serial.println("RTC lost confidence in the DateTime!");
+        Rtc.SetDateTime(compiled);
+    }
+
+    if (Rtc.GetIsWriteProtected()){
+        Serial.println("RTC was write protected, enabling writing now");
+        Rtc.SetIsWriteProtected(false);
+    }
+
+    if (!Rtc.GetIsRunning()){
+        Serial.println("RTC was not actively running, starting now");
+        Rtc.SetIsRunning(true);
+    }
+
+    //Rtc.SetDateTime(compiled);
+    RtcDateTime now = Rtc.GetDateTime();
+
+    if (now < compiled) {
+        Serial.println("RTC is older than compile time!  (Updating DateTime)");
+        Rtc.SetDateTime(compiled);
+    }
+    else if (now > compiled) 
+    {
+        Serial.println("RTC is newer than compile time. (this is expected)");
+    }
+    else if (now == compiled) 
+    {
+        Serial.println("RTC is the same as compile time! (not expected but all is fine)");
+    }
+}
+
+void printDateTime_Serial(const RtcDateTime& dt){
+    char datestring[20];
+
+    snprintf_P(datestring, 
+            countof(datestring),
+            PSTR("%02u/%02u/%04u %02u:%02u:%02u"),
+            dt.Month(),
+            dt.Day(),
+            dt.Year(),
+            dt.Hour(),
+            dt.Minute(),
+            dt.Second() 
+            );
+    Serial.print(datestring);
+}
+
+void printDateTime_Seg(){
+    RtcDateTime now = Rtc.GetDateTime();
+    int Print_time = 0;
+    Print_time += now.Hour()*100;
+    Print_time += now.Minute();
+    seg_disp_normal(Print_time,2);
+}
+
+
+void test_clk(){
+    RtcDateTime now = Rtc.GetDateTime();
+
+    printDateTime_Serial(now);
+    printDateTime_Seg();
+    Serial.println();
+
+    if (!now.IsValid()){
+        // Common Causes:
+        //    1) the battery on the device is low or even missing and the power line was disconnected
+        Serial.println("RTC lost confidence in the DateTime!");
+    }
+
+    delay(100); // ten seconds
 }

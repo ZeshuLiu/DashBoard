@@ -136,5 +136,10 @@ g:\Data\开发\DashBoard\CODE\Board\bulid\sketch\DashBoard.ino.cpp.o: \
  C:\Users\LiuZS\Documents\Arduino\libraries\ESP8266_and_ESP32_OLED_driver_for_SSD1306_displays\src/OLEDDisplayFonts.h \
  C:\Users\LiuZS\Documents\Arduino\libraries\Grove_4-Digit_Display/TM1637.h \
  C:\Users\LiuZS\Documents\Arduino\libraries\Freenove_WS2812_Lib_for_ESP32\src/Freenove_WS2812_Lib_for_ESP32.h \
- g:\Data\开发\DashBoard\CODE\Board\bulid\sketch\Dash_USB_serial.h \
- g:\Data\开发\DashBoard\CODE\Board\bulid\sketch\db_interface.h
+ g:\Data\开发\DashBoard\CODE\Board\bulid\sketch\time_1302.h \
+ C:\Users\LiuZS\Documents\Arduino\libraries\Rtc_by_Makuna\src/ThreeWire.h \
+ C:\Users\LiuZS\Documents\Arduino\libraries\Rtc_by_Makuna\src/RtcDS1302.h \
+ C:\Users\LiuZS\Documents\Arduino\libraries\Rtc_by_Makuna\src/RtcDateTime.h \
+ C:\Users\LiuZS\Documents\Arduino\libraries\Rtc_by_Makuna\src/RtcUtility.h \
+ g:\Data\开发\DashBoard\CODE\Board\bulid\sketch\db_interface.h \
+ g:\Data\开发\DashBoard\CODE\Board\bulid\sketch\Dash_USB_serial.h
