@@ -60,15 +60,15 @@ void printDateTime_Serial(const RtcDateTime& dt){
 }
 
 void printDateTime_Seg(){
-    RtcDateTime now = Rtc.GetDateTime();
-    int Print_time = 0;
-    Print_time += now.Hour()*100;
-    Print_time += now.Minute();
-    seg_disp_normal(Print_time,2);
-}
+        RtcDateTime now = Rtc.GetDateTime();
+        int Print_time = 0;
+        Print_time += now.Hour()*100;
+        Print_time += now.Minute();
+        seg_disp_normal(Print_time,2);
+    }
 
 
-void test_clk(){
+void seg_clk(){
     RtcDateTime now = Rtc.GetDateTime();
 
     printDateTime_Serial(now);
@@ -82,4 +82,28 @@ void test_clk(){
     }
 
     delay(100); // ten seconds
+}
+
+void strip_clk_one(){
+    RtcDateTime now = Rtc.GetDateTime();
+    int max_bright = 30;
+    if (now.Hour()<8 || now.Hour()>19){
+        max_bright = 15;
+    }
+    
+    int Hour_pos = (now.Hour()+18)%24;
+    int color[24][3];
+    for(int i = 0; i < 24; i++){
+        color[i][0] = 0;
+        color[i][1] = 0;
+        color[i][2] = 0;
+    }
+    color[Hour_pos][0] = max_bright;
+    color[Hour_pos][1] = max_bright;
+    color[Hour_pos][2] = max_bright;
+    int Min_pos = int(int((double(now.Minute()))/2.5)+18)%24;
+    color[Min_pos][0] = 0;
+    color[Min_pos][1] = 0;
+    color[Min_pos][2] = max_bright;
+    stp_disp_round(color);
 }

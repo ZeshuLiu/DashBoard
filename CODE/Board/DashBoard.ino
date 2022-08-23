@@ -19,7 +19,7 @@ void setup(){
 
 void loop(){
     //get_serial_data();
-    //test_clk();
+    //seg_clk();
     //interface_start();
     delay(1000);
 }

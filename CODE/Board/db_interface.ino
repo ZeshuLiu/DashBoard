@@ -117,23 +117,39 @@ void mode_ctrl_work(void *para){
 
     while (1){
         if  (mode_change){
-            mode_change = 0 ;
+            mode_change = 0;
+            //clear_oled
+            for (int i = 0; i < 10; i++){
+                oled_buff[i] = " ";
+            }
+            oled_disp(0,1);
+            //clear_led
+            int mo_color[24][3];
+            for(int i = 0; i < 24; i++){
+                mo_color[i][0] = 0;
+                mo_color[i][1] = 0;
+                mo_color[i][2] = 0;
+            }
+            stp_disp_round(mo_color);
             seg_disp_normal(mode,0);
             vTaskDelay(1000);
+            tm1637.clearDisplay();
         }
+
         Serial.println(String(mode));
         // mode work
         if (mode == 0){
-            test_clk();
-            vTaskDelay(100);
+            strip_clk_one();
+            vTaskDelay(1500);
         }
         else if(mode == 1){
             get_serial_data();
             vTaskDelay(100);
         }
         else if (mode == 2){
+            seg_clk();
             Serial.println("MODE 2");
-            vTaskDelay(100);
+            vTaskDelay(1000);
         }
         
         vTaskDelay(10);

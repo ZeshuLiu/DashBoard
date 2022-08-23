@@ -36,7 +36,7 @@ void oled_start();
 void seg_start();
 void led_start();
 void disp_test_all();
-void oled_disp(int mode, int len, bool ifclear);
+void oled_disp(int mode, bool ifclear);
 void seg_disp_normal(int number,int comma);
 void stp_disp_round(int color[24][3]);
 #endif

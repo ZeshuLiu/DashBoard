@@ -150,7 +150,7 @@ void seg_disp_normal(int number,int comma){
 void stp_disp_round(int color[24][3]){
     for (int i = 0; i < 24; i++){
         led_strip.setLedColor(24-i-1, color[i][0], color[i][1],color[i][2]);
-        delay(1);
+        delay(2);
     }
     led_strip.show();
 }

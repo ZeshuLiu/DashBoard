@@ -3,6 +3,7 @@
 #define DB_INTERFACE_H
 
 #include "db_disp.h"
+#include "time_1302.h"
 
 bool DBG_interface = 0;
 

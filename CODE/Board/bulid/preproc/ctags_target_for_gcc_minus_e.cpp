@@ -20,7 +20,7 @@ void setup(){
 
 void loop(){
     //get_serial_data();
-    //test_clk();
+    //seg_clk();
     //interface_start();
     delay(1000);
 }
@@ -326,7 +326,7 @@ void seg_disp_normal(int number,int comma){
 void stp_disp_round(int color[24][3]){
     for (int i = 0; i < 24; i++){
         led_strip.setLedColor(24-i-1, color[i][0], color[i][1],color[i][2]);
-        delay(1);
+        delay(2);
     }
     led_strip.show();
 }
@@ -454,23 +454,39 @@ void mode_ctrl_work(void *para){
 
     while (1){
         if (mode_change){
-            mode_change = 0 ;
+            mode_change = 0;
+            //clear_oled
+            for (int i = 0; i < 10; i++){
+                oled_buff[i] = " ";
+            }
+            oled_disp(0,1);
+            //clear_led
+            int mo_color[24][3];
+            for(int i = 0; i < 24; i++){
+                mo_color[i][0] = 0;
+                mo_color[i][1] = 0;
+                mo_color[i][2] = 0;
+            }
+            stp_disp_round(mo_color);
             seg_disp_normal(mode,0);
             vTaskDelay(1000);
+            tm1637.clearDisplay();
         }
+
         Serial.println(String(mode));
         // mode work
         if (mode == 0){
-            test_clk();
-            vTaskDelay(100);
+            strip_clk_one();
+            vTaskDelay(1500);
         }
         else if(mode == 1){
             get_serial_data();
             vTaskDelay(100);
         }
         else if (mode == 2){
+            seg_clk();
             Serial.println("MODE 2");
-            vTaskDelay(100);
+            vTaskDelay(1000);
         }
 
         vTaskDelay(10);
@@ -485,9 +501,9 @@ void mode_ctrl_start(){
                     "INTERFACE", /* 任务名 */
                     10240, /* 任务栈大小，根据需要自行设置*/
                     
-# 150 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino" 3 4
+# 166 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino" 3 4
                    __null
-# 150 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
+# 166 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
                        , /* 参数，入参为空 */
                     4, /* 优先级 */
                     &Mode_TASK_Handle, /* 任务句柄 */
@@ -501,7 +517,7 @@ void mode_ctrl_start(){
 void start_RTC(){
     Rtc.Begin();
 
-    RtcDateTime compiled = RtcDateTime("Aug 22 2022", "12:27:05");
+    RtcDateTime compiled = RtcDateTime("Aug 23 2022", "12:26:38");
     //RtcDateTime compiled = RtcDateTime("Dec 06 2009", "12:34:56");// sample input: date = "Dec 06 2009", time = "12:34:56"
     if (!Rtc.IsDateTimeValid()) {
         // Common Causes:
@@ -556,15 +572,15 @@ void printDateTime_Serial(const RtcDateTime& dt){
 }
 
 void printDateTime_Seg(){
-    RtcDateTime now = Rtc.GetDateTime();
-    int Print_time = 0;
-    Print_time += now.Hour()*100;
-    Print_time += now.Minute();
-    seg_disp_normal(Print_time,2);
-}
+        RtcDateTime now = Rtc.GetDateTime();
+        int Print_time = 0;
+        Print_time += now.Hour()*100;
+        Print_time += now.Minute();
+        seg_disp_normal(Print_time,2);
+    }
 
 
-void test_clk(){
+void seg_clk(){
     RtcDateTime now = Rtc.GetDateTime();
 
     printDateTime_Serial(now);
@@ -578,4 +594,28 @@ void test_clk(){
     }
 
     delay(100); // ten seconds
+}
+
+void strip_clk_one(){
+    RtcDateTime now = Rtc.GetDateTime();
+    int max_bright = 30;
+    if (now.Hour()<8 || now.Hour()>19){
+        max_bright = 15;
+    }
+
+    int Hour_pos = (now.Hour()+18)%24;
+    int color[24][3];
+    for(int i = 0; i < 24; i++){
+        color[i][0] = 0;
+        color[i][1] = 0;
+        color[i][2] = 0;
+    }
+    color[Hour_pos][0] = max_bright;
+    color[Hour_pos][1] = max_bright;
+    color[Hour_pos][2] = max_bright;
+    int Min_pos = int(int((double(now.Minute()))/2.5)+18)%24;
+    color[Min_pos][0] = 0;
+    color[Min_pos][1] = 0;
+    color[Min_pos][2] = max_bright;
+    stp_disp_round(color);
 }
