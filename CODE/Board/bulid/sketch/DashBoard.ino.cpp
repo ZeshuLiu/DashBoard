@@ -1,53 +1,10 @@
 #include <Arduino.h>
-#line 1 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\DashBoard.ino"
+#line 1 "d:\\Data\\开发\\DashBoard\\CODE\\Board\\DashBoard.ino"
 #include "db_disp.h"      // legacy: #include "SSD1306.h"
 #include "time_1302.h"
 #include "db_interface.h"
 #include "Dash_USB_serial.h"
 
-#line 6 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\DashBoard.ino"
-void setup();
-#line 20 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\DashBoard.ino"
-void loop();
-#line 5 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\Dash_USB_serial.ino"
-void get_serial_data();
-#line 39 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\Dash_USB_serial.ino"
-void Serial_Disp(String P_Data);
-#line 4 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_disp.ino"
-void oled_start();
-#line 18 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_disp.ino"
-void seg_start();
-#line 29 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_disp.ino"
-void led_start();
-#line 38 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_disp.ino"
-void disp_test_all();
-#line 68 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_disp.ino"
-void oled_disp(int mode, bool ifclear);
-#line 111 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_disp.ino"
-void seg_disp_normal(int number,int comma);
-#line 150 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_disp.ino"
-void stp_disp_round(int color[24][3]);
-#line 4 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
-void interface_init();
-#line 23 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
-void interface_work(void *para);
-#line 103 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
-void interface_start();
-#line 116 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
-void mode_ctrl_work(void *para);
-#line 160 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
-void mode_ctrl_start();
-#line 5 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.ino"
-void start_RTC();
-#line 46 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.ino"
-void printDateTime_Serial(const RtcDateTime& dt);
-#line 62 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.ino"
-void printDateTime_Seg();
-#line 71 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.ino"
-void seg_clk();
-#line 87 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.ino"
-void strip_clk_one();
-#line 6 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\DashBoard.ino"
 void setup(){
     Serial.begin(115200);
     Serial.println("Board Starting");
@@ -68,7 +25,7 @@ void loop(){
     //interface_start();
     delay(1000);
 }
-#line 1 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\Dash_USB_serial.ino"
+#line 1 "d:\\Data\\开发\\DashBoard\\CODE\\Board\\Dash_USB_serial.ino"
 #include "Dash_USB_serial.h"
 
 
@@ -217,7 +174,7 @@ void Serial_Disp(String P_Data){
     }
     //
 }
-#line 1 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_disp.ino"
+#line 1 "d:\\Data\\开发\\DashBoard\\CODE\\Board\\db_disp.ino"
 #include "db_disp.h"
 
 
@@ -374,7 +331,7 @@ void stp_disp_round(int color[24][3]){
     }
     led_strip.show();
 }
-#line 1 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
+#line 1 "d:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.ino"
 #include <Arduino.h>
 #include "db_interface.h"
 
@@ -545,7 +502,7 @@ void mode_ctrl_start(){
                     &Mode_TASK_Handle,  /* 任务句柄 */
                     Mode_Task_Core);
 }
-#line 1 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.ino"
+#line 1 "d:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.ino"
 #include "time_1302.h"
 
 #define countof(a) (sizeof(a) / sizeof(a[0]))

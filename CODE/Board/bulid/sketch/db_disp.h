@@ -1,4 +1,4 @@
-#line 1 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_disp.h"
+#line 1 "d:\\Data\\开发\\DashBoard\\CODE\\Board\\db_disp.h"
 #ifndef DB_DISP_H
 #define DB_DISP_H
 

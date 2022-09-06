@@ -1,4 +1,4 @@
-#line 1 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.h"
+#line 1 "d:\\Data\\开发\\DashBoard\\CODE\\Board\\db_interface.h"
 #ifndef DB_INTERFACE_H
 #define DB_INTERFACE_H
 

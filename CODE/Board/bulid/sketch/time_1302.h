@@ -1,4 +1,4 @@
-#line 1 "g:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.h"
+#line 1 "d:\\Data\\开发\\DashBoard\\CODE\\Board\\time_1302.h"
 #ifndef TIME_1302_H
 #define TIME_1302_H
 
