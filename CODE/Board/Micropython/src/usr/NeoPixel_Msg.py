@@ -20,11 +20,11 @@ def time0_irq(time0):
         rgb_led[(30-count)%24] = (255-g,g,0)
     rgb_led.write()
 
-def ShowBootMsg():
+def ShowBootMsg(period=20):
     global count, rgb_led
     count = 0
     time0=Timer(0)  #创建time0定时器对象
-    time0.init(period=20,mode=Timer.PERIODIC,callback=time0_irq)
+    time0.init(period=period,mode=Timer.PERIODIC,callback=time0_irq)
     
 def EndDisp():
     print("dd")

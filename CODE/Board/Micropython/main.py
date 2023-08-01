@@ -1,4 +1,4 @@
-from machine import Pin,RTC
+from machine import Pin, RTC, Timer
 from CONFIG import *
 import esp32,time
 from src.usr.WorkingMode import MainWorking, ButtonStat
@@ -36,6 +36,41 @@ def Enc2CallBack(pin):
             Buttons.ENC2-=1
         Enc2_Debounce = t0
 
+Boot_Debounce = time.ticks_ms()
+Boot_Press_Start = time.ticks_ms()
+
+def BootRCallBack(pin):
+    global Boot_Debounce, Boot_Press_Start
+    t0 = time.ticks_ms()
+    if t0 - Boot_Debounce < DebonuceTime:
+        return
+
+    print("Released, dur:",t0 - Boot_Press_Start, "?",t0 - Boot_Press_Start > Buttons.LongPress_ms)
+    if t0 - Boot_Press_Start > Buttons.LongPress_ms:
+        print("Long Press")
+        Buttons.BotButtonLong = 1
+        Buttons.BotButtonShort = 0
+    else:
+        print("Short Press")
+        Buttons.BotButtonShort = 1
+        Buttons.BotButtonLong = 0
+
+    Boot_Debounce = t0
+    Boot_Press_Start = t0
+    boot.irq(trigger=Pin.IRQ_FALLING , handler=BootFCallBack)
+
+def BootFCallBack(pin):
+    global Boot_Debounce, Boot_Press_Start
+    t0 = time.ticks_ms()
+    if t0 - Boot_Debounce < DebonuceTime:
+        return
+    
+    print("Boot Button Pressed")
+    Boot_Debounce = t0
+    Boot_Press_Start = t0
+    boot.irq(trigger=Pin.IRQ_RISING , handler=BootRCallBack)
+
+
 #初始化引脚
 ctrl = Pin(CTRL_PIN, Pin.IN, Pin.PULL_UP)
 boot = Pin(BOOT_PIN, Pin.IN, Pin.PULL_UP)
@@ -46,12 +81,22 @@ Enc2B = Pin(ENC2B_PIN, Pin.IN, Pin.PULL_UP)
 
 Enc1A.irq(trigger=Pin.IRQ_FALLING, handler=Enc1CallBack)
 Enc2A.irq(trigger=Pin.IRQ_FALLING, handler=Enc2CallBack)
+boot.irq(trigger=Pin.IRQ_FALLING , handler=BootFCallBack)
 
 #功能列表
-MWorking = MainWorking(Buttons)
+with open('./dat/CountDownTime.txt', 'r+') as CDT:
+    CDTL = CDT.readlines() # Magic number
+    if CDTL == []:
+        CDT.write('45')
+        ct = 45
+    else:
+        ct = int(CDTL[0])
+CDT.close()
+print("Count Down Time = ", ct)
+MWorking = MainWorking(Buttons,cdt= ct)
 
 while True: 
-    time.sleep_ms(100)
+    time.sleep_ms(MainWorkGap)
     MWorking.SingleWork()
 
     if ctrl.value() == 0:

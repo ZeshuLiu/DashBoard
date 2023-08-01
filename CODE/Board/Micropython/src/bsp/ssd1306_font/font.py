@@ -29,7 +29,7 @@ class Font(object):
             x=x+8
 
     def f8(self,alp,x,y):
-        self.display.text(alp,x,y,1)
+        self.display.text(alp,x,y)
     def f16(self,alp,x,y):
         self.file16.seek(ord(alp) * 16)
         font_code = self.file16.read(16)

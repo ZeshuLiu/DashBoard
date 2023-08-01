@@ -7,7 +7,7 @@ from machine import Pin,RTC
 #webrepl.start()
 
 ShowTime_ms = 1000
-CloseDisp = 0
+CloseDisp = 1
 
 
 #校准系统时间
