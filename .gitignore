@@ -70,3 +70,4 @@ iOSInjectionProject/
 build
 .vscode
 
+CODE/Board/Micropython/Test/wifi.conf
